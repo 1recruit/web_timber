@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计时器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .time-display {
+            font-size: 80px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 60px;
+            text-shadow: 0 0 20px rgba(100, 200, 255, 0.3);
+        }
+
+        .time-display .ms {
+            font-size: 40px;
+            color: #88aaff;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 16px 48px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .start {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .start:hover {
+            box-shadow: 0 10px 30px rgba(0, 184, 148, 0.4);
+        }
+
+        .pause {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+        }
+
+        .pause:hover {
+            box-shadow: 0 10px 30px rgba(253, 203, 110, 0.4);
+        }
+
+        .reset {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reset:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 600px) {
+            .time-display {
+                font-size: 48px;
+            }
+            .time-display .ms {
+                font-size: 24px;
+            }
+            button {
+                padding: 14px 36px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="time-display" id="display">00:00:00<span class="ms">.00</span></div>
+        <div class="buttons">
+            <button class="start" id="startBtn" onclick="start()">开始</button>
+            <button class="pause" id="pauseBtn" onclick="pause()" disabled>暂停</button>
+            <button class="reset" id="resetBtn" onclick="reset()">重置</button>
+        </div>
+    </div>
+
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval = null;
+        let isRunning = false;
+
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            const milliseconds = Math.floor((ms % 1000) / 10);
+
+            const pad = (n) => n.toString().padStart(2, '0');
+
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}<span class="ms">.${pad(milliseconds)}</span>`;
+        }
+
+        function updateDisplay() {
+            const current = Date.now() - startTime + elapsedTime;
+            display.innerHTML = formatTime(current);
+        }
+
+        function start() {
+            if (!isRunning) {
+                startTime = Date.now();
+                timerInterval = setInterval(updateDisplay, 10);
+                isRunning = true;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+            }
+        }
+
+        function pause() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                elapsedTime += Date.now() - startTime;
+                isRunning = false;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                startBtn.textContent = '继续';
+            }
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            startTime = 0;
+            elapsedTime = 0;
+            isRunning = false;
+            display.innerHTML = '00:00:00<span class="ms">.00</span>';
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            startBtn.textContent = '开始';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isRunning) pause();
+                else start();
+            }
+            if (e.code === 'KeyR') {
+                reset();
+            }
+        });
+    </script>
+</body>
+</html>
