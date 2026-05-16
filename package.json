@@ -1,0 +1,26 @@
+{
+  "name": "web_timber",
+  "version": "1.0.0",
+  "description": "一个简单的网页版正计时器，支持开始、暂停、重置功能。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1recruit/web_timber.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/1recruit/web_timber/issues"
+  },
+  "homepage": "https://github.com/1recruit/web_timber#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4"
+  }
+}
